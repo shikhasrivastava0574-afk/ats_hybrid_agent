@@ -143,21 +143,21 @@ class MultiAgentHiringPanel:
             verdict = "NO - DO NOT INTERVIEW (Experience Ineligible)"
             verdict_badge = "warning"
             verdict_summary = f"❌ NOT ELIGIBLE FOR INTERVIEW: Hard Experience Gate Failed. Candidate does not possess the mandatory 5-6 Years of Experience required for {job_title} at Zinsiehe."
-        elif overall_score >= 75:
+        elif overall_score >= 70:
             direct_decision = "YES - TAKE INTERVIEW"
             verdict = "YES - TAKE INTERVIEW (High Match)"
             verdict_badge = "success"
             verdict_summary = f"✅ ELIGIBLE FOR INTERVIEW: Unanimous panel approval. Candidate {candidate_name} exhibits verified 5-6 YOE technical maturity, Gen AI stack fit, and mentorship culture alignment for {job_title} at Zinsiehe."
-        elif overall_score >= 68:
-            direct_decision = "YES - TAKE INTERVIEW (Conditional)"
-            verdict = "YES - TAKE INTERVIEW (Conditional)"
+        elif overall_score >= 60:
+            direct_decision = "YES - TAKE INTERVIEW"
+            verdict = "YES - TAKE INTERVIEW (Score >= 60 Passed)"
             verdict_badge = "info"
-            verdict_summary = f"✅ ELIGIBLE FOR INTERVIEW: Passed minimum threshold. Recommended for Round 1 screening with specific focus on 5-6 YOE mentorship & client consulting fit for Zinsiehe."
+            verdict_summary = f"✅ ELIGIBLE FOR INTERVIEW: Passed 60+ threshold. Recommended for Round 1 screening with specific focus on 5-6 YOE mentorship & client consulting fit for Zinsiehe."
         else:
             direct_decision = "NO - DO NOT INTERVIEW"
-            verdict = "NO - DO NOT INTERVIEW (Ineligible)"
+            verdict = "NO - DO NOT INTERVIEW (Ineligible Score < 60)"
             verdict_badge = "warning"
-            verdict_summary = f"❌ NOT ELIGIBLE FOR INTERVIEW: Fails to meet 5-6 YOE proof-of-work or Gen AI stack benchmarks required for {job_title} at Zinsiehe."
+            verdict_summary = f"❌ NOT ELIGIBLE FOR INTERVIEW: Score is below 60/100 threshold required for {job_title} at Zinsiehe."
 
         interview_questions = [
             f"At 5-6 years of experience, how do you balance mentoring junior engineers while maintaining your own individual feature velocity?",
