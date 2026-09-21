@@ -1,17 +1,15 @@
 """
-Hybrid ATS Agent - Multi-Layout Interactive Dashboard
-Supports 3 distinct UI layout modes:
-1. Executive Glassmorphism Grid (Default)
-2. Kanban Candidate Pipeline View
-3. Compact Single-Screen Command Center
+Hybrid ATS Agent - Multi-Layout Interactive Dashboard with Google Meet Scheduling
+Supports 3 distinct UI layout modes and Google Meet interview scheduling.
 """
 
 import os
 import streamlit as st
+from datetime import datetime, date, time
 
 # Page Configuration
 st.set_page_config(
-    page_title="Zinsiehe ATS Agent | Multi-Layout Dashboard",
+    page_title="Zinsiehe ATS Agent | Multi-Layout & Google Meet Scheduler",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -21,6 +19,7 @@ from pdf_parser import parse_resume_pdf, extract_urls_and_contact
 from github_auditor import audit_github_profile
 from multi_agent_panel import MultiAgentHiringPanel
 from sample_candidates import SAMPLE_CANDIDATES, SAMPLE_JOB_DESCRIPTIONS
+from google_meet_scheduler import generate_google_calendar_url
 
 # Custom Styling
 st.markdown("""
@@ -28,13 +27,6 @@ st.markdown("""
     .stApp {
         background-color: #0f172a;
         color: #f8fafc;
-    }
-    .kanban-col {
-        background: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 16px;
-        min-height: 400px;
     }
     .card-yes {
         border-left: 4px solid #10b981;
@@ -65,6 +57,13 @@ st.markdown("""
         border-radius: 12px;
         font-weight: bold;
         font-size: 0.85rem;
+    }
+    .meet-card {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(37, 99, 235, 0.2) 100%);
+        border: 2px solid #3b82f6;
+        border-radius: 14px;
+        padding: 18px;
+        margin-top: 16px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -159,7 +158,6 @@ def main():
         )
 
     results = st.session_state.panel_results
-    is_yes = "YES" in results.get("direct_decision", "").upper()
 
     # RENDER SELECTED LAYOUT STYLE
     if "Kanban" in layout_style:
@@ -168,6 +166,44 @@ def main():
         render_command_center_layout(cand, results, target_job_title)
     else:
         render_executive_grid_layout(cand, results, target_job_title)
+
+def render_google_meet_module(cand, results, target_job_title):
+    """Render Google Meet & Calendar Scheduling Card for Shortlisted Candidates."""
+    is_yes = "YES" in results.get("direct_decision", "").upper()
+    if not is_yes:
+        return
+
+    st.markdown('<div class="meet-card">', unsafe_allow_html=True)
+    st.markdown("### 📅 Schedule Google Meet Interview")
+    st.caption("Candidate is shortlisted! Schedule the Google Meet video call directly into Google Calendar.")
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        m_date = st.date_input("Interview Date:", value=date.today())
+        m_time = st.time_input("Interview Time (IST):", value=time(14, 0))
+    with col2:
+        cand_email = st.text_input("Candidate Email Address:", value=cand.get("email") or "")
+        
+    date_str = m_date.strftime("%Y-%m-%d")
+    time_str = m_time.strftime("%H:%M")
+
+    sched_info = generate_google_calendar_url(
+        candidate_name=cand["name"],
+        candidate_email=cand_email,
+        job_title=target_job_title,
+        interview_questions=results.get("interview_questions", []),
+        match_score=results.get("overall_match_score", 80),
+        meeting_date=date_str,
+        meeting_time=time_str
+    )
+
+    st.markdown(f"**Generated Google Meet Link:** [`{sched_info['google_meet_link']}`]({sched_info['google_meet_link']})")
+    
+    st.markdown(
+        f'<a href="{sched_info["gcal_url"]}" target="_blank" style="display:inline-block; background-color:#2563eb; color:white; padding:10px 20px; border-radius:10px; font-weight:bold; text-decoration:none;">📅 Add Event & Schedule Google Meet Call</a>',
+        unsafe_allow_html=True
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # LAYOUT STYLE A: EXECUTIVE GLASSMORPHISM GRID
 def render_executive_grid_layout(cand, results, target_job_title):
@@ -196,6 +232,11 @@ def render_executive_grid_layout(cand, results, target_job_title):
         <p style="margin: 0;"><strong>Verdict Summary:</strong> {results.get('verdict_summary')}</p>
     </div>
     """, unsafe_allow_html=True)
+
+    # Google Meet Module if Shortlisted
+    render_google_meet_module(cand, results, target_job_title)
+
+    st.markdown("<br/>", unsafe_allow_html=True)
 
     c1, c2 = st.columns([1, 1], gap="large")
     with c1:
@@ -263,6 +304,8 @@ def render_kanban_layout(cand, results, target_job_title):
         </div>
         """, unsafe_allow_html=True)
 
+    render_google_meet_module(cand, results, target_job_title)
+
 # LAYOUT STYLE C: COMPACT COMMAND CENTER
 def render_command_center_layout(cand, results, target_job_title):
     st.title("⚡ Single-Screen Command Center")
@@ -275,6 +318,8 @@ def render_command_center_layout(cand, results, target_job_title):
     m2.metric("Target Role", target_job_title)
     m3.metric("Direct Decision", results.get("direct_decision"))
     m4.metric("Consensus Score", f"{results.get('overall_match_score')}/100")
+
+    render_google_meet_module(cand, results, target_job_title)
 
     st.divider()
     

@@ -64,6 +64,17 @@ class TestATSHybridAgent(unittest.TestCase):
         self.assertGreaterEqual(culture_agent["score"], 80)
         self.assertIn("Mentorship", culture_agent["opinion"])
 
+    def test_google_meet_scheduler(self):
+        from google_meet_scheduler import generate_google_calendar_url
+        res = generate_google_calendar_url(
+            candidate_name="Alex Chen",
+            candidate_email="alex.chen@example.com",
+            job_title="Senior Gen AI Engineer"
+        )
+        self.assertIn("calendar.google.com", res["gcal_url"])
+        self.assertIn("meet.google.com", res["google_meet_link"])
+        self.assertEqual(res["candidate_email"], "alex.chen@example.com")
+
 
 if __name__ == "__main__":
     unittest.main()
