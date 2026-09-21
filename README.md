@@ -4,11 +4,26 @@ An autonomous, multi-agent Applicant Tracking & Shortlisting System built for **
 
 ---
 
-## 🚀 Why FastAPI instead of Streamlit?
+## 🌐 Live Cloud Deployment Guide
 
-1. **Lightning Fast Performance**: High-throughput asynchronous REST API endpoints with zero Streamlit iframe re-renders.
-2. **Production REST API**: Standard JSON endpoints for PDF parsing, GitHub auditing, Multi-Agent panel debates, and Google Meet interview scheduling.
-3. **Custom HTML5 & Tailwind UI**: Modern dark glassmorphism dashboard with Executive Grid and Kanban funnel views.
+You can deploy this FastAPI application live to any public cloud platform in **under 2 minutes**:
+
+### Option 1: Deploy on Render (Recommended - Free Web Service)
+1. Go to [dashboard.render.com](https://dashboard.render.com/) and click **New +** ➔ **Web Service**.
+2. Connect your GitHub repository: `https://github.com/shikhasrivastava0574-afk/ats_hybrid_agent`.
+3. Set **Start Command**: `uvicorn server:app --host 0.0.0.0 --port $PORT`
+4. Click **Create Web Service**! Render will build and host your app live with an `https://...onrender.com` URL.
+
+### Option 2: Deploy on Railway
+1. Go to [railway.app](https://railway.app/) and click **New Project** ➔ **Deploy from GitHub repo**.
+2. Select `shikhasrivastava0574-afk/ats_hybrid_agent`.
+3. Railway auto-detects `Dockerfile` or `requirements.txt` and deploys your live URL.
+
+### Option 3: Deploy with Docker
+```bash
+docker build -t zinsiehe-ats-agent .
+docker run -p 8000:8000 zinsiehe-ats-agent
+```
 
 ---
 
@@ -37,29 +52,15 @@ flowchart TD
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Local Quick Start Guide
 
-### 1. Installation
 ```bash
 git clone https://github.com/shikhasrivastava0574-afk/ats_hybrid_agent.git
 cd ats_hybrid_agent
 pip install -r requirements.txt
-```
-
-### 2. Run the FastAPI Web Server
-```bash
 python3 server.py
-# or: uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 Open **`http://localhost:8000`** in your browser.
-
----
-
-## 🧪 Automated Unit Tests
-
-```bash
-python3 test_ats.py
-```
 
 ---
 
