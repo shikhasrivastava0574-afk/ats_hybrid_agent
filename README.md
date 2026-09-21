@@ -1,19 +1,14 @@
-# Zinsiehe ATS Agent | AI Recruitment & Proof-of-Work Platform
+# Zinsiehe ATS Agent | FastAPI & HTML5 / Tailwind CSS Platform
 
-An autonomous, multi-agent Applicant Tracking & Shortlisting System engineered for **Zinsiehe** (Gen AI & Analytics Consultancy). The platform combines **Resume PDF Parsing**, **GitHub Proof-of-Work Auditing**, and an **Autonomous 3-Agent Hiring Committee Debate** with a dedicated **5-6 YOE Culture Fit Evaluation Module**.
+An autonomous, multi-agent Applicant Tracking & Shortlisting System built for **Zinsiehe** (Gen AI & Analytics Consultancy). Powered by **FastAPI**, **HTML5/Tailwind CSS**, **pypdf**, and **GitHub REST API**.
 
 ---
 
-## 🌟 Key Features
+## 🚀 Why FastAPI instead of Streamlit?
 
-- 📄 **Multi-Format Resume Ingestion**: Parses PDFs, extracts emails, phone numbers, and detects embedded GitHub/portfolio URLs using `pypdf`.
-- 💻 **GitHub Proof-of-Work Audit**: Fetches public GitHub profile repositories, total stars, followers, and language breakdown to calculate a verified **Proof-of-Work Score (0-100)**.
-- 👥 **Autonomous Hiring Committee Debate**: Spawns 3 specialized AI Agents:
-  - 💻 **Tech Lead Agent**: Evaluates technical stack fit, code quality, and GitHub proof-of-work.
-  - 🤝 **Culture & Values Agent (5-6 YOE Focus)**: Evaluates **Mentorship**, **Cross-Functional Autonomy (RFCs/specs)**, **Pragmatic Tech Debt Management**, and **Production Ownership**.
-  - 🚀 **Growth & Velocity Agent**: Evaluates career progression speed and self-driven project initiative.
-- 🛑 **Hard Experience Gate**: Disqualifies 0 YOE / entry-level resumes when evaluating candidates for 5-6 YOE Senior roles.
-- ⚡ **Modern Executive Dashboard**: Built with Streamlit featuring a modern dark glassmorphic 2-column layout and immediate `YES` or `NO` decision banners.
+1. **Lightning Fast Performance**: High-throughput asynchronous REST API endpoints with zero Streamlit iframe re-renders.
+2. **Production REST API**: Standard JSON endpoints for PDF parsing, GitHub auditing, Multi-Agent panel debates, and Google Meet interview scheduling.
+3. **Custom HTML5 & Tailwind UI**: Modern dark glassmorphism dashboard with Executive Grid and Kanban funnel views.
 
 ---
 
@@ -21,68 +16,49 @@ An autonomous, multi-agent Applicant Tracking & Shortlisting System engineered f
 
 ```mermaid
 flowchart TD
-    PDF[Candidate Resume PDF] --> Parser[PDF & URL Parser Module]
-    GitHub[GitHub API / Portfolio Link] --> Auditor[Proof-of-Work Auditor]
+    Client["HTML5 / Tailwind CSS Web App (index.html)"] <--> REST["FastAPI Production Server (server.py)"]
     
-    Parser --> Panel[Multi-Agent Hiring Panel]
-    Auditor --> Panel
-    
-    subgraph Panel ["Autonomous Hiring Committee"]
-        Panel --> TechLead[Tech Lead Agent]
-        Panel --> Culture[5-6 YOE Culture Fit Agent]
-        Panel --> Growth[Growth Velocity Agent]
-    end
-    
-    TechLead & Culture & Growth --> Chair[Panel Chair Agent]
-    Chair --> Verdict["Direct Verdict: YES (Take Interview) / NO (Do Not Interview)"]
+    REST --> Parser["pdf_parser.py (Resume Ingestion)"]
+    REST --> Auditor["github_auditor.py (Proof-of-Work API)"]
+    REST --> Panel["multi_agent_panel.py (4-Agent Hiring Committee & 5-6 YOE Gate)"]
+    REST --> Meet["google_meet_scheduler.py (Google Meet Link Generator)"]
 ```
+
+---
+
+## ⚙️ REST API Endpoints
+
+- `GET /`: Serves the HTML5/Tailwind CSS interactive web dashboard.
+- `GET /api/sample_data`: Returns sample candidate profiles & Zinsiehe job descriptions.
+- `POST /api/parse_pdf`: Upload PDF resume file and extract text/contact details.
+- `POST /api/github_audit`: Audit public GitHub profile repository metrics.
+- `POST /api/evaluate`: Execute 4-Agent Hiring Board Debate & Hard 5-6 YOE Experience Gate.
+- `POST /api/schedule_meet`: Generate pre-filled Google Calendar & Google Meet video call links.
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### 1. Prerequisites
-- Python 3.10+
-- Git
-
-### 2. Installation
+### 1. Installation
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/ats-hybrid-agent.git
-cd ats-hybrid-agent
-
-# Install dependencies
+git clone https://github.com/shikhasrivastava0574-afk/ats_hybrid_agent.git
+cd ats_hybrid_agent
 pip install -r requirements.txt
 ```
 
-### 3. Run the Dashboard
+### 2. Run the FastAPI Web Server
 ```bash
-streamlit run app.py
+python3 server.py
+# or: uvicorn server:app --host 0.0.0.0 --port 8000
 ```
-Open `http://localhost:8501` in your browser.
+Open **`http://localhost:8000`** in your browser.
 
 ---
 
-## 🧪 Running Automated Tests
+## 🧪 Automated Unit Tests
 
-Run the unit test suite:
 ```bash
 python3 test_ats.py
-```
-
----
-
-## 📦 Project Structure
-
-```
-├── app.py                   # Streamlit Executive Glassmorphism UI
-├── pdf_parser.py            # PDF resume & URL extractor
-├── github_auditor.py        # GitHub API & proof-of-work quality auditor
-├── multi_agent_panel.py     # 4-Agent Hiring Board Debate Engine
-├── sample_candidates.py     # Sample profiles and Zinsiehe job descriptions
-├── test_ats.py              # Automated test suite
-├── requirements.txt         # Dependencies
-└── README.md                # Documentation & GitHub Deployment Guide
 ```
 
 ---
