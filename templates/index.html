@@ -558,8 +558,9 @@
             <td class="p-3 font-bold ${c.overall_match_score >= 60 ? 'text-emerald-400' : 'text-red-400'}">${c.overall_match_score}/100</td>
             <td class="p-3 font-mono text-sky-400">${c.proof_of_work_score}/100</td>
             <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.direct_decision.includes('YES') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}">${c.direct_decision}</span></td>
-            <td class="p-3 text-right">
-              <button onclick="openOverrideModal('${c.id}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white">Override</button>
+            <td class="p-3 text-right space-x-1">
+              <button onclick="openEmailModal('${c.id}')" class="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-bold text-white shadow-sm inline-flex items-center gap-1">✉️ Send Email</button>
+              <button onclick="openOverrideModal('${c.id}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white shadow-sm">Override</button>
             </td>
           </tr>
         `).join('');
@@ -590,7 +591,8 @@
             <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.recruiter_status === 'Shortlisted' ? 'bg-emerald-500/20 text-emerald-300' : (c.recruiter_status === 'Selected' ? 'bg-blue-500/20 text-blue-300' : 'bg-red-500/20 text-red-300')}">${c.recruiter_status}</span></td>
             <td class="p-3 text-slate-400 text-[11px] italic">${c.recruiter_override_reason || 'None (AI Default)'}</td>
             <td class="p-3 text-right space-x-1">
-              <button onclick="openOverrideModal('${c.id}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white">Override</button>
+              <button onclick="openEmailModal('${c.id}')" class="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-bold text-white shadow-sm inline-flex items-center gap-1">✉️ Send Email</button>
+              <button onclick="openOverrideModal('${c.id}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white shadow-sm">Override</button>
             </td>
           </tr>
         `).join('');
@@ -613,13 +615,14 @@
       list.forEach(c => {
         const cardHtml = `
           <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1">
-            <div class="flex justify-between items-center font-bold">
-              <span>${c.name}</span>
+            <div class="flex justify-between items-center font-bold text-xs">
+              <span class="text-white">${c.name}</span>
               <span class="${c.overall_match_score >= 60 ? 'text-emerald-400' : 'text-red-400'}">${c.overall_match_score}/100</span>
             </div>
             <p class="text-[10px] text-slate-400">${c.job_title || ''}</p>
-            <div class="pt-1 flex gap-1 justify-end">
-              <button onclick="openOverrideModal('${c.id}')" class="px-2 py-0.5 rounded bg-amber-600 text-[10px] font-bold text-white">Status</button>
+            <div class="pt-1 flex gap-1 justify-end items-center">
+              <button onclick="openEmailModal('${c.id}')" class="px-2 py-0.5 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-bold text-white flex items-center gap-0.5">✉️ Email</button>
+              <button onclick="openOverrideModal('${c.id}')" class="px-2 py-0.5 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white">Status</button>
             </div>
           </div>
         `;
@@ -641,17 +644,17 @@
     }
     async function submitRecruiterOverride() {
       const candId = document.getElementById('override-cand-id').value;
-      const newStatus = document.getElementById('override-status-select').value;
+      const status = document.getElementById('override-status-select').value;
       const reason = document.getElementById('override-reason-input').value;
 
-      if (!reason) {
-        alert("Please write your rationale for overriding the AI decision.");
+      if (!reason.trim()) {
+        alert("Please provide a rationale for the override to calibrate the AI model.");
         return;
       }
 
       const formData = new FormData();
       formData.append('candidate_id', candId);
-      formData.append('new_status', newStatus);
+      formData.append('new_status', status);
       formData.append('override_reason', reason);
 
       try {
@@ -665,22 +668,55 @@
     }
 
     // EMAIL AUTOMATION MODAL
-    async function openEmailModal() {
-      if (!currentCandidate || !currentResults) return;
+    async function openEmailModal(candId = null) {
+      let candName = "";
+      let candEmail = "";
+      let jobTitle = "Senior Gen AI & Analytics Consultant";
+      let directDecision = "YES - TAKE INTERVIEW";
+      let overallScore = 80;
+
+      if (candId) {
+        try {
+          const res = await fetch(`/api/candidate_details/${candId}`);
+          const cand = await res.json();
+          if (!cand) return alert("Candidate details not found.");
+          candName = cand.name || "Candidate";
+          candEmail = cand.email || "candidate@example.com";
+          jobTitle = cand.job_title || "Senior Gen AI & Analytics Consultant";
+          directDecision = cand.direct_decision || (cand.overall_match_score >= 60 ? "YES - TAKE INTERVIEW" : "NO - DO NOT INTERVIEW");
+          overallScore = cand.overall_match_score || 0;
+
+          currentCandidate = { name: candName, email: candEmail };
+          currentResults = { job_title: jobTitle, direct_decision: directDecision, overall_match_score: overallScore };
+          if (document.getElementById('meet-email')) {
+            document.getElementById('meet-email').value = candEmail;
+          }
+        } catch (e) {
+          return alert("Error loading candidate for email: " + e);
+        }
+      } else if (currentCandidate && currentResults) {
+        candName = currentCandidate.name;
+        candEmail = currentCandidate.email;
+        jobTitle = currentResults.job_title;
+        directDecision = currentResults.direct_decision;
+        overallScore = currentResults.overall_match_score;
+      } else {
+        return alert("Please select a candidate to send an email.");
+      }
 
       const formData = new FormData();
-      formData.append('candidate_name', currentCandidate.name);
-      formData.append('candidate_email', currentCandidate.email);
-      formData.append('job_title', currentResults.job_title);
-      formData.append('direct_decision', currentResults.direct_decision);
-      formData.append('overall_match_score', currentResults.overall_match_score);
+      formData.append('candidate_name', candName);
+      formData.append('candidate_email', candEmail);
+      formData.append('job_title', jobTitle);
+      formData.append('direct_decision', directDecision);
+      formData.append('overall_match_score', overallScore);
 
       try {
         const res = await fetch('/api/generate_email', { method: 'POST', body: formData });
         emailTemplatesData = await res.json();
         
         document.getElementById('email-modal').classList.remove('hidden');
-        selectEmailType(currentResults.direct_decision.includes('YES') ? 'invite' : 'rejection');
+        selectEmailType((directDecision && directDecision.includes('YES')) ? 'invite' : 'rejection');
       } catch (e) {
         alert("Email Generator Error: " + e);
       }
@@ -698,6 +734,17 @@
       document.getElementById('email-subject-input').value = tmpl.subject;
       document.getElementById('email-body-input').value = tmpl.body;
       document.getElementById('email-mailto-btn').href = tmpl.mailto_link;
+
+      const btnInvite = document.getElementById('btn-email-invite');
+      const btnFeedback = document.getElementById('btn-email-feedback');
+      const btnRejection = document.getElementById('btn-email-rejection');
+
+      const activeClass = "px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold";
+      const inactiveClass = "px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white";
+
+      if (btnInvite) btnInvite.className = type === 'invite' ? activeClass : inactiveClass;
+      if (btnFeedback) btnFeedback.className = type === 'feedback' ? activeClass : inactiveClass;
+      if (btnRejection) btnRejection.className = type === 'rejection' ? activeClass : inactiveClass;
     }
 
     async function updateMeetLink() {
