@@ -29,14 +29,14 @@ def audit_github_profile(username: str) -> Dict[str, Any]:
     
     try:
         # Fetch User Profile
-        user_resp = requests.get(f"https://api.github.com/users/{username}", headers=headers, timeout=5)
+        user_resp = requests.get(f"https://api.github.com/users/{username}", headers=headers, timeout=1.5)
         if user_resp.status_code != 200:
             return _generate_mock_audit(username, f"GitHub User API returned status {user_resp.status_code}")
             
         user_data = user_resp.json()
         
         # Fetch Public Repos
-        repos_resp = requests.get(f"https://api.github.com/users/{username}/repos?sort=updated&per_page=10", headers=headers, timeout=5)
+        repos_resp = requests.get(f"https://api.github.com/users/{username}/repos?sort=updated&per_page=10", headers=headers, timeout=1.5)
         repos_data = repos_resp.json() if repos_resp.status_code == 200 else []
         
         public_repos = user_data.get("public_repos", len(repos_data))

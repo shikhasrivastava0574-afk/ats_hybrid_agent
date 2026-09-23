@@ -345,6 +345,7 @@
     let currentCandidate = null;
     let currentResults = null;
     let emailTemplatesData = null;
+    const cachedCandidatesMap = {};
 
     async function init() {
       try {
@@ -549,9 +550,12 @@
 
         document.getElementById('bulk-progress').classList.add('hidden');
 
-        // Render Leaderboard
+        // Render Leaderboard & Cache Candidates
         const body = document.getElementById('bulk-leaderboard-body');
-        body.innerHTML = summary.leaderboard.map((c, idx) => `
+        if (summary.leaderboard) {
+          summary.leaderboard.forEach(c => { if (c.id) cachedCandidatesMap[c.id] = c; });
+        }
+        body.innerHTML = (summary.leaderboard || []).map((c, idx) => `
           <tr class="hover:bg-slate-800/40">
             <td class="p-3 font-bold text-indigo-400">#${idx+1}</td>
             <td class="p-3 font-semibold">${c.name}<br/><span class="text-[10px] text-slate-500">${c.email || 'N/A'}</span></td>
@@ -580,6 +584,10 @@
       try {
         const res = await fetch(`/api/candidates?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
         const list = await res.json();
+
+        if (Array.isArray(list)) {
+          list.forEach(c => { if (c.id) cachedCandidatesMap[c.id] = c; });
+        }
 
         // Database Table
         const body = document.getElementById('database-candidates-body');
@@ -667,6 +675,37 @@
       }
     }
 
+    function generateLocalEmailTemplates(name, email, job, decision, score) {
+      email = email || "candidate@example.com";
+      const isYes = (decision || "").includes('YES');
+
+      const inviteSubject = `Interview Invitation: ${job} role at Zinsiehe`;
+      const inviteBody = `Hi ${name},\n\nThank you for applying for the ${job} position at Zinsiehe!\n\nOur engineering hiring panel reviewed your resume (Consensus Score: ${score}/100), and we are excited to invite you for a 45-minute technical interview.\n\nPlease confirm your availability.\n\nBest regards,\nZinsiehe Talent Acquisition Team`;
+
+      const rejectionSubject = `Application Status: ${job} at Zinsiehe`;
+      const rejectionBody = `Dear ${name},\n\nThank you for your interest in joining Zinsiehe for the ${job} position.\n\nAfter careful evaluation, we regret to inform you that we will not be moving forward with your application for this specific position.\n\nWe wish you the best in your job search.\n\nSincerely,\nZinsiehe Hiring Team`;
+
+      return {
+        candidate_name: name,
+        candidate_email: email,
+        interview_invite: {
+          subject: inviteSubject,
+          body: inviteBody,
+          mailto_link: `mailto:${email}?subject=${encodeURIComponent(inviteSubject)}&body=${encodeURIComponent(inviteBody)}`
+        },
+        growth_feedback: {
+          subject: inviteSubject,
+          body: inviteBody,
+          mailto_link: `mailto:${email}?subject=${encodeURIComponent(inviteSubject)}&body=${encodeURIComponent(inviteBody)}`
+        },
+        rejection: {
+          subject: rejectionSubject,
+          body: rejectionBody,
+          mailto_link: `mailto:${email}?subject=${encodeURIComponent(rejectionSubject)}&body=${encodeURIComponent(rejectionBody)}`
+        }
+      };
+    }
+
     // EMAIL AUTOMATION MODAL
     async function openEmailModal(candId = null) {
       let candName = "";
@@ -676,23 +715,32 @@
       let overallScore = 80;
 
       if (candId) {
-        try {
-          const res = await fetch(`/api/candidate_details/${candId}`);
-          const cand = await res.json();
-          if (!cand) return alert("Candidate details not found.");
+        let cand = cachedCandidatesMap[candId];
+        if (!cand) {
+          try {
+            const res = await fetch(`/api/candidate_details/${candId}`);
+            if (res.ok) {
+              cand = await res.json();
+            }
+          } catch (e) {
+            console.warn("Using local candidate fallback for email:", e);
+          }
+        }
+        if (cand) {
           candName = cand.name || "Candidate";
           candEmail = cand.email || "candidate@example.com";
           jobTitle = cand.job_title || "Senior Gen AI & Analytics Consultant";
           directDecision = cand.direct_decision || (cand.overall_match_score >= 60 ? "YES - TAKE INTERVIEW" : "NO - DO NOT INTERVIEW");
           overallScore = cand.overall_match_score || 0;
+        } else {
+          candName = "Applicant";
+          candEmail = "candidate@example.com";
+        }
 
-          currentCandidate = { name: candName, email: candEmail };
-          currentResults = { job_title: jobTitle, direct_decision: directDecision, overall_match_score: overallScore };
-          if (document.getElementById('meet-email')) {
-            document.getElementById('meet-email').value = candEmail;
-          }
-        } catch (e) {
-          return alert("Error loading candidate for email: " + e);
+        currentCandidate = { name: candName, email: candEmail };
+        currentResults = { job_title: jobTitle, direct_decision: directDecision, overall_match_score: overallScore };
+        if (document.getElementById('meet-email')) {
+          document.getElementById('meet-email').value = candEmail;
         }
       } else if (currentCandidate && currentResults) {
         candName = currentCandidate.name;
@@ -713,13 +761,14 @@
 
       try {
         const res = await fetch('/api/generate_email', { method: 'POST', body: formData });
+        if (!res.ok) throw new Error("HTTP " + res.status);
         emailTemplatesData = await res.json();
-        
-        document.getElementById('email-modal').classList.remove('hidden');
-        selectEmailType((directDecision && directDecision.includes('YES')) ? 'invite' : 'rejection');
       } catch (e) {
-        alert("Email Generator Error: " + e);
+        emailTemplatesData = generateLocalEmailTemplates(candName, candEmail, jobTitle, directDecision, overallScore);
       }
+
+      document.getElementById('email-modal').classList.remove('hidden');
+      selectEmailType((directDecision && directDecision.includes('YES')) ? 'invite' : 'rejection');
     }
     function closeEmailModal() {
       document.getElementById('email-modal').classList.add('hidden');
