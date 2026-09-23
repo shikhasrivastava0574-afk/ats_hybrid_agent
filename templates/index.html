@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zinsiehe ATS Agent | FastAPI & Tailwind CSS</title>
+  <title>Zinsiehe Enterprise ATS Suite | Bulk Screening & Recruiter AI Feedback</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     .gradient-text {
@@ -26,83 +26,86 @@
       <div>
         <div class="flex items-center gap-2">
           <span class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 uppercase tracking-wider">
-            FastAPI + HTML5 / Tailwind Engine
+            Zinsiehe Enterprise ATS v3.0
           </span>
           <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            ● Server API Ready
+            ● SQLite DB & Bulk Engine Ready
           </span>
         </div>
-        <h1 class="text-3xl font-extrabold mt-2 gradient-text">Zinsiehe AI Recruitment Platform</h1>
-        <p class="text-sm text-slate-400 mt-1">Proof-of-Work Code Auditor & Multi-Agent Hiring Committee (5-6 YOE Evaluation Engine)</p>
+        <h1 class="text-3xl font-extrabold mt-2 gradient-text">Zinsiehe Enterprise Recruitment Suite</h1>
+        <p class="text-sm text-slate-400 mt-1">Bulk Screening (50–100 Resumes), Proof-of-Work Verifier, AI Committee Debate & Recruiter Override Loop</p>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="switchTab('tab-grid')" id="btn-tab-grid" class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-lg hover:bg-indigo-500 transition-all">
-          🚀 Executive Grid
+      <!-- Main Navigation Tabs -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="switchTab('tab-single')" id="btn-tab-single" class="tab-nav-btn px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-lg">
+          🚀 Single Evaluation
         </button>
-        <button onclick="switchTab('tab-kanban')" id="btn-tab-kanban" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:text-white transition-all">
+        <button onclick="switchTab('tab-bulk')" id="btn-tab-bulk" class="tab-nav-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:text-white">
+          📁 Bulk Screening (50-100)
+        </button>
+        <button onclick="switchTab('tab-database')" id="btn-tab-database" class="tab-nav-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:text-white">
+          🗄️ Candidate Database
+        </button>
+        <button onclick="switchTab('tab-kanban')" id="btn-tab-kanban" class="tab-nav-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:text-white">
           📋 Kanban Funnel
         </button>
       </div>
     </header>
 
-    <!-- Controls Panel: Role Selector & Candidate Ingestion -->
-    <div class="glass-card rounded-2xl p-6 space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        
-        <!-- Job Role Selection -->
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Target Job Role:</label>
-          <select id="role-select" onchange="onRoleChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500">
-            <!-- Dynamically populated -->
-          </select>
-        </div>
-
-        <!-- PDF Upload -->
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Upload Resume PDF:</label>
-          <input type="file" id="pdf-input" accept=".pdf" onchange="uploadPDF()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500">
-        </div>
-
-        <!-- Quick Sample Loader -->
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Test Sample Candidate:</label>
-          <div class="flex gap-2">
-            <select id="sample-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500">
-              <!-- Dynamically populated -->
-            </select>
-            <button onclick="loadSample()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold shrink-0">
-              Load & Evaluate
-            </button>
-          </div>
-        </div>
-
+    <!-- Global Target Job Role Bar -->
+    <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="w-full sm:w-2/3">
+        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Target Job Role Requirement:</label>
+        <select id="role-select" onchange="onRoleChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500">
+          <!-- Dynamically populated -->
+        </select>
+      </div>
+      <div class="text-xs text-slate-400 text-right">
+        Target Role Criteria: <strong class="text-indigo-400">Zinsiehe 5-6 YOE Senior Framework</strong>
       </div>
     </div>
 
-    <!-- Executive Verdict Banner -->
-    <div id="verdict-banner" class="hidden">
-      <!-- Dynamically rendered -->
-    </div>
+    <!-- TAB 1: SINGLE CANDIDATE EVALUATION -->
+    <div id="tab-single" class="tab-content space-y-6">
+      
+      <!-- Input Controls -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Upload PDF Resume:</label>
+            <input type="file" id="pdf-input" accept=".pdf" onchange="uploadPDF()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Or Test Sample Candidate:</label>
+            <div class="flex gap-2">
+              <select id="sample-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm">
+                <!-- Dynamically populated -->
+              </select>
+              <button onclick="loadSample()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold shrink-0">
+                Load & Evaluate
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Tab 1: Executive Grid View -->
-    <div id="tab-grid" class="tab-content space-y-6">
+      <!-- Verdict Banner -->
+      <div id="verdict-banner" class="hidden"></div>
+
+      <!-- Single View Split Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <!-- Left: Candidate Profile & GitHub Audit -->
+        <!-- Left: Candidate Profile & Proof of Work -->
         <div class="space-y-4">
           <div class="glass-card rounded-2xl p-6 space-y-3">
-            <h3 class="font-bold text-lg text-indigo-400">👤 Candidate Profile & Proof-of-Work</h3>
-            <div id="cand-details-box" class="text-xs space-y-2 text-slate-300">
-              <!-- Candidate JSON details -->
-            </div>
+            <h3 class="font-bold text-lg text-indigo-400">👤 Candidate Profile</h3>
+            <div id="cand-details-box" class="text-xs space-y-2 text-slate-300"></div>
           </div>
 
           <div class="glass-card rounded-2xl p-6 space-y-3">
-            <h3 class="font-bold text-lg text-sky-400">💻 GitHub Code Quality Audit</h3>
-            <div id="github-audit-box" class="space-y-3">
-              <!-- GitHub Stats -->
-            </div>
+            <h3 class="font-bold text-lg text-sky-400">💻 GitHub Code Audit</h3>
+            <div id="github-audit-box" class="space-y-3"></div>
           </div>
         </div>
 
@@ -110,50 +113,138 @@
         <div class="space-y-4">
           <div class="glass-card rounded-2xl p-6 space-y-3">
             <h3 class="font-bold text-lg text-purple-400">👥 Autonomous Hiring Committee Opinions</h3>
-            <div id="debates-box" class="space-y-3">
-              <!-- Debates -->
-            </div>
+            <div id="debates-box" class="space-y-3"></div>
           </div>
 
           <div class="glass-card rounded-2xl p-6 space-y-3">
             <h3 class="font-bold text-lg text-emerald-400">❓ Custom Generated 5-6 YOE Interview Questions</h3>
-            <div id="questions-box" class="space-y-2 text-xs">
-              <!-- Questions -->
-            </div>
+            <div id="questions-box" class="space-y-2 text-xs"></div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Tab 2: Kanban Pipeline View -->
-    <div id="tab-kanban" class="tab-content hidden">
+    <!-- TAB 2: BULK RESUME SCREENING (50-100 RESUMES) -->
+    <div id="tab-bulk" class="tab-content hidden space-y-6">
+      
+      <!-- Bulk Dropzone Card -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <div>
+          <h3 class="font-bold text-lg text-indigo-400 flex items-center gap-2">
+            <span>📁</span> Bulk Resume Screening Dropzone (50–100 Resumes)
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Select multiple PDF resume files at once. The platform will parse, audit GitHub proof-of-work, and rank candidates into a sorted leaderboard.</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+          <input type="file" id="bulk-files-input" accept=".pdf" multiple class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white">
+          <button onclick="runBulkScreening()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shrink-0">
+            ⚡ Run Bulk Screening
+          </button>
+        </div>
+        
+        <div id="bulk-progress" class="hidden text-xs text-indigo-400 font-semibold">
+          Processing resumes in parallel... Please wait.
+        </div>
+      </div>
+
+      <!-- Ranked Leaderboard Table -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <h3 class="font-bold text-lg text-sky-400">🏆 Ranked Candidate Leaderboard</h3>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-800/80 text-slate-400 font-bold uppercase text-[10px]">
+              <tr>
+                <th class="p-3">Rank</th>
+                <th class="p-3">Candidate Name</th>
+                <th class="p-3">Match Score</th>
+                <th class="p-3">PoW Score</th>
+                <th class="p-3">AI Verdict</th>
+                <th class="p-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bulk-leaderboard-body" class="divide-y divide-slate-800">
+              <tr><td colspan="6" class="p-4 text-center text-slate-500">No bulk batch processed yet. Upload 50–100 resumes above.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: PERSISTENT CANDIDATE DATABASE (SQLITE) -->
+    <div id="tab-database" class="tab-content hidden space-y-6">
+      
+      <!-- Search & Filters -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="w-full md:w-1/2">
+          <input type="text" id="db-search" oninput="fetchDatabaseCandidates()" placeholder="Search candidates by name, email, or role..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-indigo-500">
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold text-slate-400">Filter Status:</label>
+          <select id="db-status-filter" onchange="fetchDatabaseCandidates()" class="bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs">
+            <option value="All">All Applicants</option>
+            <option value="Shortlisted">Shortlisted</option>
+            <option value="Selected">Selected</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Database Candidates Table -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-800/80 text-slate-400 font-bold uppercase text-[10px]">
+              <tr>
+                <th class="p-3">Candidate</th>
+                <th class="p-3">Target Role</th>
+                <th class="p-3">Match Score</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Recruiter Override Note</th>
+                <th class="p-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="database-candidates-body" class="divide-y divide-slate-800">
+              <!-- Dynamically populated from SQLite -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 4: KANBAN PIPELINE BOARD -->
+    <div id="tab-kanban" class="tab-content hidden space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <div class="glass-card rounded-2xl p-4 space-y-3">
-          <h4 class="font-bold text-sm uppercase text-slate-400 border-b border-slate-700 pb-2">1. Ingestion Stage</h4>
-          <div id="kanban-stage-1" class="text-xs space-y-2"></div>
+          <h4 class="font-bold text-xs uppercase text-slate-400 border-b border-slate-700 pb-2">1. Ingested & Review</h4>
+          <div id="kanban-col-review" class="space-y-2 text-xs"></div>
         </div>
 
         <div class="glass-card rounded-2xl p-4 space-y-3">
-          <h4 class="font-bold text-sm uppercase text-slate-400 border-b border-slate-700 pb-2">2. Proof-of-Work Audit</h4>
-          <div id="kanban-stage-2" class="text-xs space-y-2"></div>
+          <h4 class="font-bold text-xs uppercase text-emerald-400 border-b border-slate-700 pb-2">2. Shortlisted for Interview</h4>
+          <div id="kanban-col-shortlisted" class="space-y-2 text-xs"></div>
         </div>
 
         <div class="glass-card rounded-2xl p-4 space-y-3">
-          <h4 class="font-bold text-sm uppercase text-slate-400 border-b border-slate-700 pb-2">3. Committee Debate</h4>
-          <div id="kanban-stage-3" class="text-xs space-y-2"></div>
+          <h4 class="font-bold text-xs uppercase text-blue-400 border-b border-slate-700 pb-2">3. Selected</h4>
+          <div id="kanban-col-selected" class="space-y-2 text-xs"></div>
         </div>
 
         <div class="glass-card rounded-2xl p-4 space-y-3">
-          <h4 class="font-bold text-sm uppercase text-slate-400 border-b border-slate-700 pb-2">4. Final Verdict</h4>
-          <div id="kanban-stage-4" class="text-xs space-y-2"></div>
+          <h4 class="font-bold text-xs uppercase text-red-400 border-b border-slate-700 pb-2">4. Rejected</h4>
+          <div id="kanban-col-rejected" class="space-y-2 text-xs"></div>
         </div>
 
       </div>
     </div>
 
-    <!-- Google Meet & Calendar Scheduling Card -->
+    <!-- Google Meet & Calendar Card -->
     <div id="meet-card" class="glass-card border-2 border-blue-500/50 rounded-2xl p-6 space-y-4 hidden">
       <div class="flex items-center justify-between">
         <h3 class="font-bold text-xl text-blue-400 flex items-center gap-2">
@@ -177,8 +268,72 @@
         </div>
       </div>
 
-      <div id="meet-action-box" class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <!-- Dynamically rendered -->
+      <div id="meet-action-box" class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4"></div>
+    </div>
+
+    <!-- RECRUITER AI OVERRIDE MODAL DIALOG -->
+    <div id="override-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+      <div class="glass-card rounded-2xl p-6 max-w-lg w-full space-y-4">
+        <h3 class="font-bold text-lg text-indigo-400">✏️ Recruiter AI Decision Override</h3>
+        <p class="text-xs text-slate-400">Override the AI recommendation and log your rationale for model feedback calibration.</p>
+
+        <input type="hidden" id="override-cand-id">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">New Recruiter Status:</label>
+          <select id="override-status-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs">
+            <option value="Shortlisted">Shortlisted</option>
+            <option value="Selected">Selected</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Override Rationale / Reason:</label>
+          <textarea id="override-reason-input" rows="3" placeholder="Explain why you are overriding the AI decision..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeOverrideModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">
+            Cancel
+          </button>
+          <button onclick="submitRecruiterOverride()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white">
+            Save Override & Calibrate AI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAIL AUTOMATION MODAL DIALOG -->
+    <div id="email-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+      <div class="glass-card rounded-2xl p-6 max-w-2xl w-full space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-lg text-emerald-400">✉️ Automated Email Generator</h3>
+          <button onclick="closeEmailModal()" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <div class="flex gap-2 border-b border-slate-700 pb-2 text-xs">
+          <button onclick="selectEmailType('invite')" id="btn-email-invite" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold">Interview Invitation</button>
+          <button onclick="selectEmailType('feedback')" id="btn-email-feedback" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white">Growth Feedback</button>
+          <button onclick="selectEmailType('rejection')" id="btn-email-rejection" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white">Rejection Note</button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Email Subject:</label>
+          <input type="text" id="email-subject-input" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs font-semibold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Email Content Preview:</label>
+          <textarea id="email-body-input" rows="8" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs font-mono"></textarea>
+        </div>
+
+        <div class="flex justify-between items-center pt-2">
+          <span class="text-[11px] text-slate-400">Clicking below opens your default email client with pre-filled content.</span>
+          <a id="email-mailto-btn" href="#" target="_blank" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg">
+            📧 Open in Mail Client
+          </a>
+        </div>
       </div>
     </div>
 
@@ -189,8 +344,8 @@
     let sampleData = {};
     let currentCandidate = null;
     let currentResults = null;
+    let emailTemplatesData = null;
 
-    // Load sample data from FastAPI REST API
     async function init() {
       try {
         const res = await fetch('/api/sample_data');
@@ -212,7 +367,7 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('meet-date').value = today;
 
-        // Auto load first sample
+        fetchDatabaseCandidates();
         loadSample();
       } catch (e) {
         console.error("Init Error:", e);
@@ -275,6 +430,7 @@
         const res = await fetch('/api/evaluate', { method: 'POST', body: formData });
         currentResults = await res.json();
         renderDashboard();
+        fetchDatabaseCandidates();
       } catch (e) {
         console.error("Evaluation Error:", e);
       }
@@ -307,7 +463,17 @@
           </div>
         </div>
         <hr class="border-slate-700 my-3"/>
-        <p class="text-sm text-slate-300"><strong>Panel Chair Verdict Summary:</strong> ${currentResults.verdict_summary}</p>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p class="text-xs text-slate-300"><strong>Panel Chair Verdict Summary:</strong> ${currentResults.verdict_summary}</p>
+          <div class="flex gap-2 shrink-0">
+            <button onclick="openOverrideModal('${currentResults.candidate_id}')" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-bold text-white">
+              ✏️ Override AI Decision
+            </button>
+            <button onclick="openEmailModal()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white">
+              ✉️ Send Automated Email
+            </button>
+          </div>
+        </div>
       `;
 
       // Candidate Details
@@ -335,7 +501,7 @@
         <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1">
           <div class="flex justify-between items-center text-xs font-bold">
             <span class="text-slate-200">${d.agent}</span>
-            <span class="${d.score >= 70 ? 'text-emerald-400' : 'text-amber-400'}">${d.score}/100</span>
+            <span class="${d.score >= 60 ? 'text-emerald-400' : 'text-amber-400'}">${d.score}/100</span>
           </div>
           <p class="text-xs text-slate-300">"${d.opinion}"</p>
         </div>
@@ -346,12 +512,6 @@
         <p class="p-2 rounded bg-slate-800/50"><strong>Q${idx+1}:</strong> ${q}</p>
       `).join('');
 
-      // Render Kanban
-      document.getElementById('kanban-stage-1').innerHTML = `<div class="p-3 rounded bg-slate-800 border border-slate-700"><strong>${currentCandidate.name}</strong><br/><span class="text-slate-400">${currentCandidate.email}</span></div>`;
-      document.getElementById('kanban-stage-2').innerHTML = `<div class="p-3 rounded bg-slate-800 border border-slate-700"><strong>PoW Score: ${powScore}/100</strong></div>`;
-      document.getElementById('kanban-stage-3').innerHTML = currentResults.agent_debates.map(d => `<div class="p-2 rounded bg-slate-800">${d.agent}: ${d.score}/100</div>`).join('');
-      document.getElementById('kanban-stage-4').innerHTML = `<div class="p-3 rounded ${isYes ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500' : 'bg-red-500/20 text-red-300 border border-red-500'} font-bold">${currentResults.direct_decision}</div>`;
-
       // Google Meet Box
       const meetCard = document.getElementById('meet-card');
       if (isYes) {
@@ -361,6 +521,183 @@
       } else {
         meetCard.classList.add('hidden');
       }
+    }
+
+    // BULK SCREENING (50-100 RESUMES)
+    async function runBulkScreening() {
+      const input = document.getElementById('bulk-files-input');
+      if (!input.files || input.files.length === 0) {
+        alert("Please select PDF resumes for bulk screening.");
+        return;
+      }
+
+      const jobTitle = document.getElementById('role-select').value;
+      const jobDesc = sampleData.sample_job_descriptions[jobTitle] || jobTitle;
+
+      const formData = new FormData();
+      for (let i = 0; i < input.files.length; i++) {
+        formData.append('files', input.files[i]);
+      }
+      formData.append('job_title', jobTitle);
+      formData.append('job_description', jobDesc);
+
+      document.getElementById('bulk-progress').classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/bulk_upload', { method: 'POST', body: formData });
+        const summary = await res.json();
+
+        document.getElementById('bulk-progress').classList.add('hidden');
+
+        // Render Leaderboard
+        const body = document.getElementById('bulk-leaderboard-body');
+        body.innerHTML = summary.leaderboard.map((c, idx) => `
+          <tr class="hover:bg-slate-800/40">
+            <td class="p-3 font-bold text-indigo-400">#${idx+1}</td>
+            <td class="p-3 font-semibold">${c.name}<br/><span class="text-[10px] text-slate-500">${c.email || 'N/A'}</span></td>
+            <td class="p-3 font-bold ${c.overall_match_score >= 60 ? 'text-emerald-400' : 'text-red-400'}">${c.overall_match_score}/100</td>
+            <td class="p-3 font-mono text-sky-400">${c.proof_of_work_score}/100</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.direct_decision.includes('YES') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}">${c.direct_decision}</span></td>
+            <td class="p-3 text-right">
+              <button onclick="openOverrideModal('${c.id}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white">Override</button>
+            </td>
+          </tr>
+        `).join('');
+
+        fetchDatabaseCandidates();
+      } catch (e) {
+        document.getElementById('bulk-progress').classList.add('hidden');
+        alert("Bulk error: " + e);
+      }
+    }
+
+    // CANDIDATE DATABASE & KANBAN FETCH
+    async function fetchDatabaseCandidates() {
+      const search = document.getElementById('db-search').value;
+      const status = document.getElementById('db-status-filter').value;
+
+      try {
+        const res = await fetch(`/api/candidates?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
+        const list = await res.json();
+
+        // Database Table
+        const body = document.getElementById('database-candidates-body');
+        body.innerHTML = list.map(c => `
+          <tr class="hover:bg-slate-800/40">
+            <td class="p-3 font-bold">${c.name}<br/><span class="text-[10px] text-slate-500">${c.email || 'N/A'}</span></td>
+            <td class="p-3 text-slate-300">${c.job_title || 'Senior Consultant'}</td>
+            <td class="p-3 font-bold ${c.overall_match_score >= 60 ? 'text-emerald-400' : 'text-red-400'}">${c.overall_match_score}/100</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.recruiter_status === 'Shortlisted' ? 'bg-emerald-500/20 text-emerald-300' : (c.recruiter_status === 'Selected' ? 'bg-blue-500/20 text-blue-300' : 'bg-red-500/20 text-red-300')}">${c.recruiter_status}</span></td>
+            <td class="p-3 text-slate-400 text-[11px] italic">${c.recruiter_override_reason || 'None (AI Default)'}</td>
+            <td class="p-3 text-right space-x-1">
+              <button onclick="openOverrideModal('${c.id}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white">Override</button>
+            </td>
+          </tr>
+        `).join('');
+
+        // Kanban Pipeline Columns
+        renderKanbanColumns(list);
+      } catch (e) {
+        console.error("DB Fetch Error:", e);
+      }
+    }
+
+    function renderKanbanColumns(list) {
+      const colReview = document.getElementById('kanban-col-review');
+      const colShortlisted = document.getElementById('kanban-col-shortlisted');
+      const colSelected = document.getElementById('kanban-col-selected');
+      const colRejected = document.getElementById('kanban-col-rejected');
+
+      colReview.innerHTML = ''; colShortlisted.innerHTML = ''; colSelected.innerHTML = ''; colRejected.innerHTML = '';
+
+      list.forEach(c => {
+        const cardHtml = `
+          <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1">
+            <div class="flex justify-between items-center font-bold">
+              <span>${c.name}</span>
+              <span class="${c.overall_match_score >= 60 ? 'text-emerald-400' : 'text-red-400'}">${c.overall_match_score}/100</span>
+            </div>
+            <p class="text-[10px] text-slate-400">${c.job_title || ''}</p>
+            <div class="pt-1 flex gap-1 justify-end">
+              <button onclick="openOverrideModal('${c.id}')" class="px-2 py-0.5 rounded bg-amber-600 text-[10px] font-bold text-white">Status</button>
+            </div>
+          </div>
+        `;
+
+        if (c.recruiter_status === 'Selected') colSelected.innerHTML += cardHtml;
+        else if (c.recruiter_status === 'Shortlisted') colShortlisted.innerHTML += cardHtml;
+        else if (c.recruiter_status === 'Rejected') colRejected.innerHTML += cardHtml;
+        else colReview.innerHTML += cardHtml;
+      });
+    }
+
+    // RECRUITER AI OVERRIDE MODAL
+    function openOverrideModal(candId) {
+      document.getElementById('override-cand-id').value = candId;
+      document.getElementById('override-modal').classList.remove('hidden');
+    }
+    function closeOverrideModal() {
+      document.getElementById('override-modal').classList.add('hidden');
+    }
+    async function submitRecruiterOverride() {
+      const candId = document.getElementById('override-cand-id').value;
+      const newStatus = document.getElementById('override-status-select').value;
+      const reason = document.getElementById('override-reason-input').value;
+
+      if (!reason) {
+        alert("Please write your rationale for overriding the AI decision.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('candidate_id', candId);
+      formData.append('new_status', newStatus);
+      formData.append('override_reason', reason);
+
+      try {
+        await fetch('/api/recruiter_override', { method: 'POST', body: formData });
+        closeOverrideModal();
+        fetchDatabaseCandidates();
+        alert("Recruiter override & AI calibration feedback recorded!");
+      } catch (e) {
+        alert("Override Error: " + e);
+      }
+    }
+
+    // EMAIL AUTOMATION MODAL
+    async function openEmailModal() {
+      if (!currentCandidate || !currentResults) return;
+
+      const formData = new FormData();
+      formData.append('candidate_name', currentCandidate.name);
+      formData.append('candidate_email', currentCandidate.email);
+      formData.append('job_title', currentResults.job_title);
+      formData.append('direct_decision', currentResults.direct_decision);
+      formData.append('overall_match_score', currentResults.overall_match_score);
+
+      try {
+        const res = await fetch('/api/generate_email', { method: 'POST', body: formData });
+        emailTemplatesData = await res.json();
+        
+        document.getElementById('email-modal').classList.remove('hidden');
+        selectEmailType(currentResults.direct_decision.includes('YES') ? 'invite' : 'rejection');
+      } catch (e) {
+        alert("Email Generator Error: " + e);
+      }
+    }
+    function closeEmailModal() {
+      document.getElementById('email-modal').classList.add('hidden');
+    }
+    function selectEmailType(type) {
+      if (!emailTemplatesData) return;
+
+      let tmpl = emailTemplatesData.interview_invite;
+      if (type === 'feedback') tmpl = emailTemplatesData.growth_feedback;
+      if (type === 'rejection') tmpl = emailTemplatesData.rejection;
+
+      document.getElementById('email-subject-input').value = tmpl.subject;
+      document.getElementById('email-body-input').value = tmpl.body;
+      document.getElementById('email-mailto-btn').href = tmpl.mailto_link;
     }
 
     async function updateMeetLink() {
